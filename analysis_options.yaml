@@ -1,0 +1,45 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    # Prefer const constructors
+    prefer_const_constructors: true
+    prefer_const_literals_to_create_immutables: true
+    
+    # Prefer final variables
+    prefer_final_fields: true
+    prefer_final_locals: true
+    
+    # Avoid unnecessary containers
+    avoid_unnecessary_containers: true
+    
+    # Prefer sized box over container
+    prefer_sized_box_for_whitespace: true
+    
+    # Avoid print statements
+    avoid_print: true
+    
+    # Prefer single quotes
+    prefer_single_quotes: true
+    
+    # Sort child properties
+    sort_child_properties_last: true
+    
+    # Use key in widget constructors
+    use_key_in_widget_constructors: true
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+  
+  errors:
+    # Treat missing required parameters as a warning (not a hint)
+    missing_required_param: warning
+    missing_return: warning
+    
+    # Allow having TODOs in the code
+    todo: ignore
+    
+    # Allow having print statements in the code
+    avoid_print: ignore

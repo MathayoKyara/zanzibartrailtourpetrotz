@@ -29,6 +29,9 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentHeroIndex = 0;
   Timer? _heroTimer;
   bool _scaleUp = false;
+  bool _showZanzibarScrollHint = true;
+  bool _showSafariScrollHint = true;
+  bool _showGemScrollHint = true;
 
   @override
   void didChangeDependencies() {
@@ -104,15 +107,6 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 100),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.pushNamed(context, '/booking-demo');
-        },
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.white,
-        icon: Icon(Icons.book_online),
-        label: Text('Try Booking System'),
       ),
       bottomNavigationBar: BottomNavigation(
         currentIndex: _currentIndex,
@@ -245,75 +239,111 @@ class _HomeScreenState extends State<HomeScreen> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 32),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final bool isCompact = constraints.maxWidth < 480;
+                    final double horizontalPadding =
+                        isCompact ? 16 : 32;
+                    final double fontSize = isCompact ? 14 : 16;
+                    final double spacing = isCompact ? 8 : 16;
+
+                    Widget buildButton(Widget child) {
+                      return Flexible(
+                        child: child,
+                      );
+                    }
+
+                    final exploreButton = ElevatedButton(
                       onPressed: () {
                         Navigator.pushNamed(context, '/tours');
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         foregroundColor: Theme.of(context).primaryColor,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: horizontalPadding, vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
+                        minimumSize: Size(0, 48),
                       ),
                       child: Text(
                         'Explore Tours',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: fontSize,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    SizedBox(width: 16),
-                    ElevatedButton(
+                    );
+
+                    final hiddenGemsButton = ElevatedButton(
                       onPressed: () {
                         Navigator.pushNamed(context, '/hidden-gems');
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.orange[600],
                         foregroundColor: Colors.white,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: horizontalPadding, vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
+                        minimumSize: Size(0, 48),
                       ),
                       child: Text(
                         'Hidden Gems',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: fontSize,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    SizedBox(width: 16),
-                    OutlinedButton(
+                    );
+
+                    final bookNowButton = OutlinedButton(
                       onPressed: () {
                         Navigator.pushNamed(context, '/booking');
                       },
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.white,
                         side: BorderSide(color: Colors.white),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: horizontalPadding, vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
+                        minimumSize: Size(0, 48),
                       ),
                       child: Text(
                         'Book Now',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: fontSize,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                  ],
+                    );
+
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                            minWidth: constraints.maxWidth),
+                        child: IntrinsicWidth(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(width: spacing),
+                              buildButton(exploreButton),
+                              SizedBox(width: spacing),
+                              buildButton(hiddenGemsButton),
+                              SizedBox(width: spacing),
+                              buildButton(bookNowButton),
+                              SizedBox(width: spacing),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -403,14 +433,23 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           SizedBox(height: 16),
-          SizedBox(
-            height: 440, // Taller to balance with added card content
+          _buildHorizontalScrollContainer(
+            height: 440,
+            showHint: _showZanzibarScrollHint,
+            hintLabel: 'Swipe to explore tours',
+            onScrolled: () {
+              if (_showZanzibarScrollHint) {
+                setState(() {
+                  _showZanzibarScrollHint = false;
+                });
+              }
+            },
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: sampleTours.length,
               itemBuilder: (context, index) {
                 return Container(
-                  width: 320, // Slightly wider for balanced layout
+                  width: 320,
                   margin: EdgeInsets.only(right: 16),
                   child: _buildHorizontalScriptedCard(sampleTours[index]),
                 );
@@ -430,14 +469,23 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           SizedBox(height: 16),
-          SizedBox(
-            height: 440, // Match Zanzibar section height for balance
+          _buildHorizontalScrollContainer(
+            height: 440,
+            showHint: _showSafariScrollHint,
+            hintLabel: 'Swipe to browse safaris',
+            onScrolled: () {
+              if (_showSafariScrollHint) {
+                setState(() {
+                  _showSafariScrollHint = false;
+                });
+              }
+            },
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: sampleSafaris.length,
               itemBuilder: (context, index) {
                 return Container(
-                  width: 320, // Match width for consistent look
+                  width: 320,
                   margin: EdgeInsets.only(right: 16),
                   child:
                       _buildHorizontalTourCard(sampleSafaris[index], 'safari'),
@@ -505,14 +553,23 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           SizedBox(height: 24),
-          SizedBox(
-            height: 460, // Increased height to accommodate all content
+          _buildHorizontalScrollContainer(
+            height: 460,
+            showHint: _showGemScrollHint,
+            hintLabel: 'Swipe to see more gems',
+            onScrolled: () {
+              if (_showGemScrollHint) {
+                setState(() {
+                  _showGemScrollHint = false;
+                });
+              }
+            },
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: sampleGems.length,
               itemBuilder: (context, index) {
                 return Container(
-                  width: 300, // Increased width for better content display
+                  width: 300,
                   margin: EdgeInsets.only(right: 16),
                   child: _buildHorizontalGemCard(sampleGems[index]),
                 );
@@ -998,6 +1055,78 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Widget _buildHorizontalScrollContainer({
+    required double height,
+    required Widget child,
+    required bool showHint,
+    required String hintLabel,
+    required VoidCallback onScrolled,
+  }) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final bool enableHints = constraints.maxWidth < 900;
+        final bool displayHint = enableHints && showHint;
+        return SizedBox(
+          height: height,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              NotificationListener<ScrollNotification>(
+                onNotification: (notification) {
+                  if (!displayHint) return false;
+                  if (notification.metrics.pixels > 8) {
+                    onScrolled();
+                  }
+                  return false;
+                },
+                child: child,
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: AnimatedOpacity(
+                  opacity: displayHint ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 300),
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 12),
+                    child: _buildScrollHintChip(hintLabel),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildScrollHintChip(String text) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.65),
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.swipe, size: 16, color: Colors.white70),
+          SizedBox(width: 6),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.white,
+              letterSpacing: 0.2,
+            ),
+          ),
+          SizedBox(width: 6),
+          Icon(Icons.keyboard_double_arrow_right,
+              size: 16, color: Colors.white70),
+        ],
+      ),
+    );
+  }
+
   Widget _buildPricingSection() {
     return Container(
       padding: EdgeInsets.all(24),
@@ -1318,31 +1447,42 @@ class _HomeScreenState extends State<HomeScreen> {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final bool isCompact = constraints.maxWidth < 480;
+              final double horizontalPadding =
+                  isCompact ? 16 : 32;
+              final double fontSize = isCompact ? 14 : 16;
+              final double spacing = isCompact ? 8 : 16;
+
+              Widget buildButton(Widget child) {
+                return Flexible(child: child);
+              }
+
+              final contactButton = ElevatedButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/contact');
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: Theme.of(context).primaryColor,
-                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
+                  minimumSize: Size(0, 48),
                 ),
                 child: Text(
                   'Contact Us',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: fontSize,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-              SizedBox(width: 16),
-              ElevatedButton(
+              );
+
+              final bookButton = ElevatedButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/booking');
                 },
@@ -1350,21 +1490,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   backgroundColor: Colors.transparent,
                   foregroundColor: Colors.white,
                   side: BorderSide(color: Colors.white),
-                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
+                  minimumSize: Size(0, 48),
                 ),
                 child: Text(
                   'Book Now',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: fontSize,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-              SizedBox(width: 16),
-              ElevatedButton(
+              );
+
+              final aboutButton = ElevatedButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/about');
                 },
@@ -1372,20 +1514,43 @@ class _HomeScreenState extends State<HomeScreen> {
                   backgroundColor: Colors.transparent,
                   foregroundColor: Colors.white,
                   side: BorderSide(color: Colors.white),
-                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
+                  minimumSize: Size(0, 48),
                 ),
                 child: Text(
                   'About Us',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: fontSize,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-            ],
+              );
+
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                  child: IntrinsicWidth(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(width: spacing),
+                        buildButton(contactButton),
+                        SizedBox(width: spacing),
+                        buildButton(bookButton),
+                        SizedBox(width: spacing),
+                        buildButton(aboutButton),
+                        SizedBox(width: spacing),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         ],
       ),

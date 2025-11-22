@@ -20,12 +20,6 @@ class _ToursScreenState extends State<ToursScreen>
   String _selectedActivity = 'All';
   String _selectedPrice = 'All';
 
-  // Temporary filter state for popup
-  String _tempLocation = 'All';
-  String _tempDuration = 'All';
-  String _tempActivity = 'All';
-  String _tempPrice = 'All';
-
   @override
   void initState() {
     super.initState();
@@ -1113,131 +1107,123 @@ class _ToursScreenState extends State<ToursScreen>
   }
 
   // Filter methods
-  void _showLocationFilter() {
-    setState(() {
-      _tempLocation = _selectedLocation;
-    });
-    showModalBottomSheet(
+  void _showLocationFilter() async {
+    final selection = await _openFilterBottomSheet(
+      title: 'Location',
+      options: [
+        'All',
+        'Stone Town',
+        'Nungwi',
+        'Paje',
+        'Kizimkazi',
+        'Jozani',
+        'Mnemba',
+        'Serengeti',
+        'Ngorongoro',
+        'Selous',
+        'Mikumi'
+      ],
+      initialValue: _selectedLocation,
+    );
+    if (selection != null) {
+      setState(() => _selectedLocation = selection);
+    }
+  }
+
+  void _showDurationFilter() async {
+    final selection = await _openFilterBottomSheet(
+      title: 'Duration',
+      options: [
+        'All',
+        'Half Day',
+        'Full Day',
+        '2 Days',
+        '3 Days',
+        '4 Days',
+        '5 Days',
+        '6 Days',
+        '8 Days'
+      ],
+      initialValue: _selectedDuration,
+    );
+    if (selection != null) {
+      setState(() => _selectedDuration = selection);
+    }
+  }
+
+  void _showActivityFilter() async {
+    final selection = await _openFilterBottomSheet(
+      title: 'Activity',
+      options: [
+        'All',
+        'Cultural',
+        'Wildlife',
+        'Beach',
+        'Snorkeling',
+        'Safari',
+        'Cooking',
+        'Walking',
+        'Boat'
+      ],
+      initialValue: _selectedActivity,
+    );
+    if (selection != null) {
+      setState(() => _selectedActivity = selection);
+    }
+  }
+
+  void _showPriceFilter() async {
+    final selection = await _openFilterBottomSheet(
+      title: 'Price Range',
+      options: [
+        'All',
+        'Under \$150',
+        '\$150 - \$300',
+        '\$300 - \$500',
+        'Over \$500',
+        'Featured'
+      ],
+      initialValue: _selectedPrice,
+    );
+    if (selection != null) {
+      setState(() => _selectedPrice = selection);
+    }
+  }
+
+  Future<String?> _openFilterBottomSheet({
+    required String title,
+    required List<String> options,
+    required String initialValue,
+  }) {
+    return showModalBottomSheet<String>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => _buildFilterBottomSheet(
-        'Location',
-        [
-          'All',
-          'Stone Town',
-          'Nungwi',
-          'Paje',
-          'Kizimkazi',
-          'Jozani',
-          'Mnemba',
-          'Serengeti',
-          'Ngorongoro',
-          'Selous',
-          'Mikumi'
-        ],
-        _tempLocation,
-        (value) => setState(() => _tempLocation = value),
-        () {
-          setState(() => _selectedLocation = _tempLocation);
-          Navigator.pop(context);
-        },
-      ),
+      builder: (sheetContext) {
+        String tempSelection = initialValue;
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return _buildFilterBottomSheet(
+              title,
+              options,
+              tempSelection,
+              (value) => setModalState(() => tempSelection = value),
+              () => Navigator.pop(sheetContext, tempSelection),
+              () => Navigator.pop(sheetContext),
+            );
+          },
+        );
+      },
     );
   }
 
-  void _showDurationFilter() {
-    setState(() {
-      _tempDuration = _selectedDuration;
-    });
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => _buildFilterBottomSheet(
-        'Duration',
-        [
-          'All',
-          'Half Day',
-          'Full Day',
-          '2 Days',
-          '3 Days',
-          '4 Days',
-          '5 Days',
-          '6 Days',
-          '8 Days'
-        ],
-        _tempDuration,
-        (value) => setState(() => _tempDuration = value),
-        () {
-          setState(() => _selectedDuration = _tempDuration);
-          Navigator.pop(context);
-        },
-      ),
-    );
-  }
-
-  void _showActivityFilter() {
-    setState(() {
-      _tempActivity = _selectedActivity;
-    });
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => _buildFilterBottomSheet(
-        'Activity',
-        [
-          'All',
-          'Cultural',
-          'Wildlife',
-          'Beach',
-          'Snorkeling',
-          'Safari',
-          'Cooking',
-          'Walking',
-          'Boat'
-        ],
-        _tempActivity,
-        (value) => setState(() => _tempActivity = value),
-        () {
-          setState(() => _selectedActivity = _tempActivity);
-          Navigator.pop(context);
-        },
-      ),
-    );
-  }
-
-  void _showPriceFilter() {
-    setState(() {
-      _tempPrice = _selectedPrice;
-    });
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => _buildFilterBottomSheet(
-        'Price Range',
-        [
-          'All',
-          'Under \$150',
-          '\$150 - \$300',
-          '\$300 - \$500',
-          'Over \$500',
-          'Featured'
-        ],
-        _tempPrice,
-        (value) => setState(() => _tempPrice = value),
-        () {
-          setState(() => _selectedPrice = _tempPrice);
-          Navigator.pop(context);
-        },
-      ),
-    );
-  }
-
-  Widget _buildFilterBottomSheet(String title, List<String> options,
-      String selected, Function(String) onSelect, VoidCallback onConfirm) {
+  Widget _buildFilterBottomSheet(
+      String title,
+      List<String> options,
+      String selected,
+      ValueChanged<String> onSelect,
+      VoidCallback onConfirm,
+      VoidCallback onCancel) {
     return Container(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.7,
@@ -1278,7 +1264,7 @@ class _ToursScreenState extends State<ToursScreen>
                   ),
                 ),
                 IconButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: onCancel,
                   icon: Icon(Icons.close, color: Colors.grey[600]),
                 ),
               ],
@@ -1347,7 +1333,7 @@ class _ToursScreenState extends State<ToursScreen>
               children: [
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: onCancel,
                     style: OutlinedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 16),
                       side: BorderSide(color: Colors.grey[400]!),

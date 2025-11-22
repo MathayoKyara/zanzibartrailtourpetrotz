@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import '../widgets/bottom_navigation.dart';
 
 class ContactScreen extends StatefulWidget {
@@ -10,11 +13,36 @@ class ContactScreen extends StatefulWidget {
 class _ContactScreenState extends State<ContactScreen> {
   int _currentIndex = 3;
   final _formKey = GlobalKey<FormState>();
+  bool _isSending = false;
 
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _subjectController = TextEditingController();
   TextEditingController _messageController = TextEditingController();
+
+  // EmailJS Configuration - Replace these with your EmailJS credentials
+  //
+  // SETUP INSTRUCTIONS:
+  // 1. Go to https://www.emailjs.com/ and create a free account
+  // 2. Add your email service (Gmail, Outlook, etc.) - use ZanzibarTrailTours@gmail.com
+  // 3. Create an email template with these variables:
+  //    - {{to_email}} - Recipient email (ZanzibarTrailTours@gmail.com)
+  //    - {{from_name}} - Sender's name
+  //    - {{from_email}} - Sender's email
+  //    - {{subject}} - Email subject
+  //    - {{message}} - Email message content
+  //    - {{reply_to}} - Reply-to email
+  // 4. Copy your Service ID, Template ID, and Public Key
+  // 5. Replace the values below with your credentials
+  // 6. In EmailJS dashboard, add your website URL to allowed origins:
+  //    - https://mathayokyara.github.io (production)
+  //    - http://localhost (for local development)
+  //
+  static const String emailJSServiceId = 'YOUR_SERVICE_ID';
+  static const String emailJSTemplateId = 'YOUR_TEMPLATE_ID';
+  static const String emailJSPublicKey = 'YOUR_PUBLIC_KEY';
+  static const String emailJSAPIUrl =
+      'https://api.emailjs.com/api/v1.0/email/send';
 
   @override
   Widget build(BuildContext context) {
@@ -77,12 +105,12 @@ class _ContactScreenState extends State<ContactScreen> {
                       _buildContactItem(
                         Icons.email,
                         'Email',
-                        'info@tanzaniatrailtours.com',
+                        'info@zanzibartrailtours.com',
                         () async {
                           final Uri params = Uri(
                             scheme: 'mailto',
-                            path: 'info@tanzaniatrailtours.com',
-                            query: 'subject=Inquiry about Tanzania Trail Tours',
+                            path: 'info@zanzibartrailtours.com',
+                            query: 'subject=Inquiry about Zanzibar Trail Tours',
                           );
                           if (await canLaunchUrl(params)) {
                             await launchUrl(params);
@@ -93,11 +121,11 @@ class _ContactScreenState extends State<ContactScreen> {
                       _buildContactItem(
                         Icons.phone,
                         'Phone',
-                        '+255 777 123 456',
+                        '+255 675 538 957',
                         () async {
                           if (await canLaunchUrl(
-                              Uri.parse('tel:+255777123456'))) {
-                            await launchUrl(Uri.parse('tel:+255777123456'));
+                              Uri.parse('tel:+255675538957'))) {
+                            await launchUrl(Uri.parse('tel:+255675538957'));
                           }
                         },
                       ),
@@ -105,12 +133,12 @@ class _ContactScreenState extends State<ContactScreen> {
                       _buildContactItem(
                         Icons.chat,
                         'WhatsApp',
-                        '+255 777 123 456',
+                        '+255 675 538 957',
                         () async {
                           if (await canLaunchUrl(
-                              Uri.parse('https://wa.me/255777123456'))) {
+                              Uri.parse('https://wa.me/255675538957'))) {
                             await launchUrl(
-                                Uri.parse('https://wa.me/255777123456'));
+                                Uri.parse('https://wa.me/255675538957'));
                           }
                         },
                       ),
@@ -118,7 +146,7 @@ class _ContactScreenState extends State<ContactScreen> {
                       _buildContactItem(
                         Icons.location_on,
                         'Address',
-                        'Stone Town, Zanzibar, Tanzania',
+                        'Mchina Mwisho, Zanzibar, Tanzania',
                         () async {
                           // Open maps
                           if (await canLaunchUrl(
@@ -141,42 +169,42 @@ class _ContactScreenState extends State<ContactScreen> {
                                 size: 30, color: Colors.blue[600]),
                             onPressed: () async {
                               if (await canLaunchUrl(Uri.parse(
-                                  'https://facebook.com/tanzaniatrailtours'))) {
+                                  'https://facebook.com/zanzibartrailtours'))) {
                                 await launchUrl(Uri.parse(
-                                    'https://facebook.com/tanzaniatrailtours'));
+                                    'https://facebook.com/zanzibartrailtours'));
                               }
                             },
                           ),
                           IconButton(
-                            icon: Icon(Icons.camera_alt,
+                            icon: FaIcon(FontAwesomeIcons.instagram,
                                 size: 30, color: Colors.purple[600]),
                             onPressed: () async {
                               if (await canLaunchUrl(Uri.parse(
-                                  'https://instagram.com/tanzaniatrailtours'))) {
+                                  'https://instagram.com/zanzibartrailtours'))) {
                                 await launchUrl(Uri.parse(
-                                    'https://instagram.com/tanzaniatrailtours'));
+                                    'https://instagram.com/zanzibartrailtours'));
                               }
                             },
                           ),
                           IconButton(
-                            icon: Icon(Icons.music_note,
+                            icon: FaIcon(FontAwesomeIcons.tiktok,
                                 size: 30, color: Colors.black),
                             onPressed: () async {
                               if (await canLaunchUrl(Uri.parse(
-                                  'https://tiktok.com/@tanzaniatrailtours'))) {
+                                  'https://tiktok.com/@zanzibartrailtours'))) {
                                 await launchUrl(Uri.parse(
-                                    'https://tiktok.com/@tanzaniatrailtours'));
+                                    'https://tiktok.com/@zanzibartrailtours'));
                               }
                             },
                           ),
                           IconButton(
-                            icon: Icon(Icons.play_circle,
+                            icon: FaIcon(FontAwesomeIcons.youtube,
                                 size: 30, color: Colors.red[600]),
                             onPressed: () async {
                               if (await canLaunchUrl(Uri.parse(
-                                  'https://youtube.com/tanzaniatrailtours'))) {
+                                  'https://youtube.com/zanzibartrailtours'))) {
                                 await launchUrl(Uri.parse(
-                                    'https://youtube.com/tanzaniatrailtours'));
+                                    'https://youtube.com/zanzibartrailtours'));
                               }
                             },
                           ),
@@ -263,12 +291,32 @@ class _ContactScreenState extends State<ContactScreen> {
                         ),
                         SizedBox(height: 24),
                         ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              _sendMessage();
-                            }
-                          },
-                          child: Text('Send Message'),
+                          onPressed: _isSending
+                              ? null
+                              : () {
+                                  if (_formKey.currentState!.validate()) {
+                                    _sendMessage();
+                                  }
+                                },
+                          child: _isSending
+                              ? Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
+                                      ),
+                                    ),
+                                    SizedBox(width: 12),
+                                    Text('Sending...'),
+                                  ],
+                                )
+                              : Text('Send Message'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
                                 Theme.of(context).colorScheme.secondary,
@@ -341,28 +389,149 @@ class _ContactScreenState extends State<ContactScreen> {
     );
   }
 
-  void _sendMessage() {
-    // Here you would typically send the message to your backend
-    // For now, we'll just show a confirmation dialog
+  void _sendMessage() async {
+    setState(() {
+      _isSending = true;
+    });
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Message Sent'),
-          content: Text(
-              'Thank you for your message! We will respond to your inquiry within 24 hours.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _formKey.currentState!.reset();
-              },
-              child: Text('OK'),
-            ),
-          ],
+    try {
+      final String adminEmail = 'ZanzibarTrailTours@gmail.com';
+
+      // Format the email content
+      final String emailContent = '''
+Dear Zanzibar Trail Tours Team,
+
+I would like to contact you with the following inquiry:
+
+MESSAGE DETAILS:
+• Name: ${_nameController.text}
+• Email: ${_emailController.text}
+• Subject: ${_subjectController.text}
+
+MESSAGE:
+${_messageController.text}
+
+Thank you for your time and I look forward to hearing from you soon.
+
+Best regards,
+${_nameController.text}
+      '''
+          .trim();
+
+      // Prepare email data for EmailJS
+      final Map<String, dynamic> emailData = {
+        'service_id': emailJSServiceId,
+        'template_id': emailJSTemplateId,
+        'user_id': emailJSPublicKey,
+        'template_params': {
+          'to_email': adminEmail,
+          'from_name': _nameController.text,
+          'from_email': _emailController.text,
+          'subject': _subjectController.text,
+          'message': emailContent,
+          'reply_to': _emailController.text,
+        }
+      };
+
+      // Get current origin for CORS (required by EmailJS)
+      String origin = 'https://mathayokyara.github.io';
+      if (Uri.base.host.contains('localhost') ||
+          Uri.base.host.contains('127.0.0.1')) {
+        origin = 'http://localhost';
+      } else if (Uri.base.hasScheme && Uri.base.hasAuthority) {
+        origin = '${Uri.base.scheme}://${Uri.base.authority}';
+      }
+
+      // Send email using EmailJS API
+      final response = await http
+          .post(
+        Uri.parse(emailJSAPIUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'origin': origin, // Required by EmailJS CORS policy
+        },
+        body: jsonEncode(emailData),
+      )
+          .timeout(
+        Duration(seconds: 30),
+        onTimeout: () {
+          throw Exception(
+              'Request timeout. Please check your internet connection.');
+        },
+      );
+
+      setState(() {
+        _isSending = false;
+      });
+
+      if (response.statusCode == 200) {
+        // Success - show success dialog
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Message Sent Successfully!'),
+              content: Text(
+                  'Thank you for your message! Your inquiry has been sent to ZanzibarTrailTours@gmail.com. We will respond to you within 24 hours.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    // Reset form after successful send
+                    _nameController.clear();
+                    _emailController.clear();
+                    _subjectController.clear();
+                    _messageController.clear();
+                    _formKey.currentState!.reset();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
         );
-      },
-    );
+      } else {
+        // Error response from EmailJS
+        throw Exception(
+            'Failed to send email. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      setState(() {
+        _isSending = false;
+      });
+
+      // Show error dialog
+      String errorMessage = 'An error occurred while sending your message. ';
+
+      if (e.toString().contains('timeout')) {
+        errorMessage += 'Please check your internet connection and try again.';
+      } else if (e.toString().contains('YOUR_SERVICE_ID') ||
+          e.toString().contains('YOUR_TEMPLATE_ID') ||
+          e.toString().contains('YOUR_PUBLIC_KEY')) {
+        errorMessage +=
+            'Email service is not configured. Please contact the website administrator.';
+      } else {
+        errorMessage +=
+            'Please try again or contact us directly at ZanzibarTrailTours@gmail.com';
+      }
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text(errorMessage),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 }

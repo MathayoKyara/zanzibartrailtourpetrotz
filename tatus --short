@@ -1,0 +1,56 @@
+[1mdiff --cc web/404.html[m
+[1mindex 3df52a5,f5109f9..0000000[m
+[1m--- a/web/404.html[m
+[1m+++ b/web/404.html[m
+[36m@@@ -1,40 -1,16 +1,41 @@@[m
+  <!DOCTYPE html>[m
+[31m- <html>[m
+[32m+ <html lang="en">[m
+    <head>[m
+      <meta charset="UTF-8">[m
+[32m+     <meta name="viewport" content="width=device-width, initial-scale=1.0">[m
+[31m -    <meta http-equiv="refresh" content="0; url=/ZanzibarTrailTour/">[m
+[31m -    <script type="text/javascript">[m
+[31m -      window.location.href = "/ZanzibarTrailTour/";[m
+[32m +    <title>Zanzibar Trail Tours</title>[m
+[32m +    <script>[m
+[32m +      // Single Page Apps for GitHub Pages[m
+[32m +      // https://github.com/rafgraph/spa-github-pages[m
+[32m +      // This script takes the current url and converts the path and query[m
+[32m +      // string into just a query string, and then redirects the browser[m
+[32m +      // to the new url with only a query string and hash fragment,[m
+[32m +      // e.g., https://www.foo.tld/one/two?a=b&c=d#qwe, becomes[m
+[32m +      // https://www.foo.tld/?/one/two&a=b~and~c=d#qwe[m
+[32m +      // Note: this 404.html file must be at least 512 bytes for it to work[m
+[32m +      // with Internet Explorer (it is currently > 512 bytes)[m
+[32m +[m
+[32m +      // If you're creating a Project Pages site and NOT using a custom domain,[m
+[32m +      // then set segmentCount to 1 (enterprise users may need to set it to > 1).[m
+[32m +      // This way the code will only replace the route part and not the real directory.[m
+[32m +      // For example, if your app is served from https://username.github.io/repo-name/,[m
+[32m +      // then segmentCount should be 1.[m
+[32m +      // If your app is served from https://username.github.io/repo-name/sub-dir/,[m
+[32m +      // then segmentCount should be 2.[m
+[32m +      var segmentCount = 1;[m
+[32m +[m
+[32m +      var l = window.location;[m
+[32m +      l.replace([m
+[32m +        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +[m
+[32m +        l.pathname.split('/').slice(0, 1 + segmentCount).join('/') + '/?/' +[m
+[32m +        l.pathname.slice(1).split('/').slice(segmentCount).join('/').replace(/&/g, '~and~') +[m
+[32m +        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +[m
+[32m +        l.hash[m
+[32m +      );[m
+[32m +[m
+      </script>[m
+[31m -    <title>Redirecting...</title>[m
+    </head>[m
+    <body>[m
+[31m -    <p>If you are not redirected automatically, <a href="/ZanzibarTrailTour/">click here</a>.</p>[m
+    </body>[m
+  </html>[m
+  [m
+[1mdiff --cc web/index.html[m
+[1mindex 2e15a69,a3bd428..0000000[m
+[1m--- a/web/index.html[m
+[1m+++ b/web/index.html[m

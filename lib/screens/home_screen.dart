@@ -242,8 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 LayoutBuilder(
                   builder: (context, constraints) {
                     final bool isCompact = constraints.maxWidth < 480;
-                    final double horizontalPadding =
-                        isCompact ? 16 : 32;
+                    final double horizontalPadding = isCompact ? 16 : 32;
                     final double fontSize = isCompact ? 14 : 16;
                     final double spacing = isCompact ? 8 : 16;
 
@@ -325,8 +324,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     return SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                            minWidth: constraints.maxWidth),
+                        constraints:
+                            BoxConstraints(minWidth: constraints.maxWidth),
                         child: IntrinsicWidth(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -1450,8 +1449,7 @@ class _HomeScreenState extends State<HomeScreen> {
           LayoutBuilder(
             builder: (context, constraints) {
               final bool isCompact = constraints.maxWidth < 480;
-              final double horizontalPadding =
-                  isCompact ? 16 : 32;
+              final double horizontalPadding = isCompact ? 16 : 32;
               final double fontSize = isCompact ? 14 : 16;
               final double spacing = isCompact ? 8 : 16;
 
@@ -1466,8 +1464,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: Theme.of(context).primaryColor,
-                  padding:
-                      EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 14),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: horizontalPadding, vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -1490,8 +1488,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   backgroundColor: Colors.transparent,
                   foregroundColor: Colors.white,
                   side: BorderSide(color: Colors.white),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 14),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: horizontalPadding, vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -1514,8 +1512,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   backgroundColor: Colors.transparent,
                   foregroundColor: Colors.white,
                   side: BorderSide(color: Colors.white),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 14),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: horizontalPadding, vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),

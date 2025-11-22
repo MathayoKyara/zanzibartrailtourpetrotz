@@ -9,7 +9,6 @@ import 'screens/contact_screen.dart';
 import 'screens/tour_detail_screen.dart';
 import 'screens/hidden_gems_screen.dart';
 import 'screens/booking_demo_screen.dart';
-import 'widgets/bottom_navigation.dart';
 
 void main() {
   runApp(const MyApp());
